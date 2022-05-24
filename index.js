@@ -7,25 +7,13 @@ var width = 1080;
 var margin = {top:40, right:80, bottom:60, left:50};
 
 
-// NEEDED HTML elements
-// Dropdown
-d3.select('body')
-  .append('select')
-  .attr('class','yearsDropdown')
-  ;
+// SELECTING HTML elements
+var yearsDropdown = d3.select('#yearsDropdown');
+var svg = d3.select("#dataVisualisation")
 
-var yearsDropdown = d3.select('.yearsDropdown');
-
-//SVG ELEMENT
-d3.select('body')
-  .append('svg')
+svg
   .attr('height', height)
   .attr('width', width)
-  .attr('id', 'chart')
-  ;
-
-var chart = d3.select('#chart');
-
 
 // PLOTTING & VISUALIZATION
 function render(data){
@@ -91,7 +79,7 @@ function render(data){
 
 // Create containers for visualisations
   // Bar Container
-  chart
+  svg
     .append('g')
     .attr('id', 'dataVizContainer')
     ;
@@ -99,7 +87,7 @@ function render(data){
   var dataVizContainer = d3.select('#dataVizContainer');
 
   // Axis Container
-  chart
+  svg
     .append('g')
     .attr('id', "axisContainer")
     ;
