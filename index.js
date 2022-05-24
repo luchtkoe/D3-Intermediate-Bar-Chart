@@ -7,13 +7,26 @@ var width = 1080;
 var margin = {top:40, right:80, bottom:60, left:50};
 
 
+
 // SELECTING HTML elements
 var yearsDropdown = d3.select('#yearsDropdown');
-var svg = d3.select("#dataVisualisation")
+var svg = d3.select("#dataVisualisation");
 
 svg
   .attr('height', height)
   .attr('width', width)
+
+var tooltip = d3.select("#charting")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px")
+  .style("position", "absolute")
+  ;
 
 // PLOTTING & VISUALIZATION
 function render(data){
@@ -94,7 +107,6 @@ function render(data){
 
     var axisContainer = d3.select('#axisContainer');
 
-
 // Visualization of data
   // X & Y Axis
   axisContainer
@@ -153,7 +165,7 @@ function render(data){
       .selectAll('rect')
       .data(dataSlice)
       .join('rect')
-      //.classed('bar',true)
+      .classed('bar',true)
       .attr('x', (d) => xScale(d.region))
       .attr('y', (d) => yScale(d.population))
       .attr('width', xScale.bandwidth())
@@ -161,6 +173,9 @@ function render(data){
       .attr('y', (d) => yScale(d.population))
       .attr("fill", (d,i) => colorScale[i])
       .attr('class', (d) => d.region)
+      .on('mouseenter', onMouseEnter)
+      .on("mouseout", onMouseOut)
+      .on("mousemove", onMouseMove)
       ;
 
     yAxisChart
@@ -182,6 +197,26 @@ function render(data){
       var selectedOption = d3.select(this).property('value');
       updateYear(selectedOption);
   })
+
+  // interaction tooltip bars
+  function onMouseEnter(d,i){
+    tooltip
+      .transition()
+      .duration(200)
+      .style('opacity', 0.9);
+  }
+  function onMouseOut(d,i){
+      tooltip
+        .transition()
+        .duration(500)
+        .style('opacity', 0);
+  }
+  function onMouseMove(d,i){
+    tooltip
+      .text(i.population) 
+      .attr("transform", "translate("+ d.screenY + "," + d.screenX + ")")
+      .style("top", (d.screenY)+"px").style("left",(d.screenX)+"px")        
+  }
 
 // ACTIVATE PRESET Data
 updateYear("2020")
@@ -207,6 +242,7 @@ d3.csv("PerCountryPopulation19502050.csv").then(function(data){
 
   // Start visualisation
   render(data)
+  
 })
 
 //RUNNING TIME
