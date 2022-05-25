@@ -134,9 +134,23 @@ function render(data){
     .append('g')
     .attr('id', 'bars')
     ;
-
+  
   var bars = d3.select('#bars')
-// Interaction with Data
+
+  bars
+    .selectAll('rect')
+    .data(data.slice(0,10))
+    .join('rect')
+    .classed('bar',true)
+    .attr('x', (d) => xScale(d.region))
+    .attr('y', (d) => yScale(0))
+    .attr('width', xScale.bandwidth())
+    .attr('height', (d) => 0)
+    .attr("fill", (d,i) => colorScale[i])
+    .on('mouseenter', onMouseEnter)
+    .on("mouseout", onMouseOut)
+    .on("mousemove", onMouseMove)
+// nteraction with Data
 
   // Interaction selecting year
   function updateYear(selectedYear){
@@ -167,15 +181,13 @@ function render(data){
       .join('rect')
       .classed('bar',true)
       .attr('x', (d) => xScale(d.region))
-      .attr('y', (d) => yScale(d.population))
       .attr('width', xScale.bandwidth())
+      .transition()
+      .duration(1000)
       .attr('height', (d) => (height - margin.bottom) - yScale(d.population))
       .attr('y', (d) => yScale(d.population))
       .attr("fill", (d,i) => colorScale[i])
       .attr('class', (d) => d.region)
-      .on('mouseenter', onMouseEnter)
-      .on("mouseout", onMouseOut)
-      .on("mousemove", onMouseMove)
       ;
 
     yAxisChart
